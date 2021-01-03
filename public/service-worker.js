@@ -6,7 +6,7 @@ const DATA_CACHE_NAME = "data-cache-v1";
 self.addEventListener("install", function (evt) {
   // pre cache image data
   evt.waitUntil(
-    caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/transaction"))
+    caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/transaction/bulk"))
   );
     
 
