@@ -1,22 +1,29 @@
+const FILES_TO_CACHE = [
+    './index.html',
+    './styles.css',
+    './index.js',
+    './db.js',
+    './manifest.webmanifest',
+    './icons/icon-192x192.png',
+    './icons/icon-512x512.png'
+
+  ];
+
 const CACHE_NAME = "static-cache-v2";
 const DATA_CACHE_NAME = "data-cache-v1";
 
-
 // install
-self.addEventListener("install", function (evt) {
-  // pre cache image data
+self.addEventListener("install", function(evt) {
   evt.waitUntil(
-    caches.open(DATA_CACHE_NAME).then((cache) => cache.add("/api/transaction/bulk"))
+    caches.open(CACHE_NAME).then(cache => {
+      console.log("Your files were pre-cached successfully!");
+      return cache.addAll(FILES_TO_CACHE);
+    })
   );
-    
 
-
-  // tell the browser to activate this service worker immediately once it
-  // has finished installing
   self.skipWaiting();
 });
 
-// activate
 self.addEventListener("activate", function(evt) {
   evt.waitUntil(
     caches.keys().then(keyList => {
@@ -36,6 +43,7 @@ self.addEventListener("activate", function(evt) {
 
 // fetch
 self.addEventListener("fetch", function(evt) {
+  // cache successful requests to the API
   if (evt.request.url.includes("/api/")) {
     evt.respondWith(
       caches.open(DATA_CACHE_NAME).then(cache => {
@@ -58,11 +66,14 @@ self.addEventListener("fetch", function(evt) {
     return;
   }
 
+  // if the request is not for the API, serve static assets using "offline-first" approach.
+
   evt.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(evt.request).then(response => {
-        return response || fetch(evt.request);
-      });
+    caches.match(evt.request).then(function(response) {
+     if (evt.request.mode !== 'same-origin') {
+      return response || fetch(evt.request);
+      }
+  
     })
   );
 });
