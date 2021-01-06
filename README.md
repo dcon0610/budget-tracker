@@ -15,6 +15,9 @@ When brought back online:
 
 To accomplish this, this app uses a service worker and the indexed.db in the browser. The service worker caches the pages for viewing when there is no internet connection (Note: only firefox unreservedly serves cached pages when there is no internet connection after Chrome ceased having the view cached pages button). The data gets saved to the indexed.db part of the browser and goes into a table there called pending. When the site comes back online, db.js serves them back to the database. 
 
+The app is linked to at 
+https://cryptic-ocean-45949.herokuapp.com/
+
 When the app is online, the data gets put right in the the database.
 ![](public/images/Online.png)
 
